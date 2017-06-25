@@ -321,3 +321,91 @@ processPlayer2 <- function(intro, seats) {
   }
   return(playerInfo)
 } 
+
+preFlopFun <- function(hand, df, breakPoints, allin = F) {
+  preFlop <- hand[(breakPoints[1] + 1):(breakPoints[2] - 1)]
+  actionPoints <- c(1, grep(paste0(screenName, ":"), preFlop))
+  numActions <- length(actionPoints) - 1
+  for (j in 1:numActions) {
+    triplets <- data.frame(name = character(0), action = character(0), amt = numeric(0),
+                           allin = logical(0), stringsAsFactors = F)
+    for (i in (actionPoints[j] + 1):actionPoints[j + 1]) {
+      triplet <- processLine(preFlop[i])
+      triplets[i - 1, 1] <- triplet$name
+      triplets[i - 1, 2] <- triplet$action
+      triplets[i - 1, 3] <- triplet$amt
+      triplets[i - 1, 4] <- triplet$allin
+    }
+    # Update data frame
+    df[j, 7:10] <- c(triplets[nrow(triplets), 1:3], "preflop")
+    if(triplets[nrow(triplets), 4]){
+      allin <- T
+    }
+    if (nrow(triplets) != 1) {
+      for (k in 1:(nrow(triplets) - 1)) {
+        index <- which(df[1,] == triplets[k,1]) 
+        df[j, c(index + 1, index + 2)] <- triplets[k,2:3]
+      }
+    }
+  }
+  # Check if last action point was a fold.  If that's false, check if last action point is
+  # length(preflop). Otherwise, we need to send back triplets.
+  if (df[nrow(df), 7] != "folds") {
+    if (actionPoints[length(actionPoints)] != length(preFlop)) {
+      finalTriplets <- data.frame(name = character(0), action = character(0), amt = numeric(0),
+                                  allin = logical(0), stringsAsFactors = F)
+      for (i in (actionPoints[length(actionPoints)] + 1):length(preFlop)) {
+        triplet <- processLine(preFlop[i])
+        finalTriplets[i - actionPoints[length(actionPoints)], 1] <- triplet$name
+        finalTriplets[i - actionPoints[length(actionPoints)], 2] <- triplet$action
+        finalTriplets[i - actionPoints[length(actionPoints)], 3] <- triplet$amt
+      }
+    } else {
+      finalTriplets = NA
+    }
+  } else {
+    finalTriplets = NA
+  }
+  return(list(df = df, finalTriplets = finalTriplets, allin = allin))
+}
+
+### processLine will return name, action, amt triplet. For loop will combine these into a frame.
+### processLine should be general for any time a line can be processed.
+processLine <- function(line, allin = F) {
+  line <- strsplit(line, ":")
+  name <- line[[1]][1]
+  actionAmt <- line[[1]][2]
+  actionAmt <- trimws(actionAmt)
+  actionAmt <- strsplit(actionAmt, " ")
+  action <- actionAmt[[1]][1]
+  if (length(actionAmt[[1]]) == 1) {
+    amt <- NA
+  } else if(actionAmt[[1]][length(actionAmt[[1]])] == "all-in"){
+    if(length(actionAmt[[1]] == 5)){
+      amt <- as.numeric(actionAmt[[1]][2])
+    }else{
+      amt <- as.numeric(actionAmt[[1]][4])
+    }
+    allin <- T
+  }  else {
+    amt <- as.numeric(tail(actionAmt[[1]][2]), n=1)
+  }
+  
+  return(list(name = name, action = action, amt = amt, allin = allin))
+}
+
+# setStartVals <- function(df, playerInfo){
+#   # start has cards to false for last 4 players since there must always be 2
+#   df[1,c(30,35,40)] <- F
+#   # always setting preflop pot to 1 big and 1 small blind for now
+#   df[1,10] <- df[1,41]*1.5
+#   # setting my stack size to start the hand 
+#   df[1,5] <- playerInfo[1,2]
+#   # setting each players stack size and that they have cards to start
+#   for(i in 1:(nrow(playerInfo) - 1)){
+#     df[1,i*5 + 11] <- playerInfo[i + 1, 1]
+#     df[1,i*5 + 14] <- playerInfo[i + 1, 2]
+#     df[1,i*5 + 15] <- T
+#   }
+#   return(df)
+# }
