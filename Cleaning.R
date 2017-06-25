@@ -1,72 +1,41 @@
-rm(list = ls())
 
-setwd("~/Desktop/Hands")
 
-processFile = function(filepath) {
-  con = file(filepath, "r")
-  hands <- list()
-  data <- c()
-  i <- 1
-  j <- 1
-  
-  while ( TRUE ) {
-    line = readLines(con, n = 1)
-    if ( length(line) == 0 ) {
-      break
-    }
-    data[i] <- line
-    
-    # print(line)
-    
-    if(data[i] == ""){
-      if(data[i-1] == ""){
-        hands[[j]] <- data
-        j <- j + 1
-        i <- 1
-        data <- c()
-      } else {
-        i <- i + 1 
-      }
-    } else {
-      i <- i + 1 
-    }
+cleanLong <- function(handLong){
+  if(length(grep("has timed out", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep("has timed out", handLong, fixed = T)]
+  }
+  if(length(grep("leaves the table", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep("leaves the table", handLong, fixed = T)]
+  }
+  if(length(grep("joins the table", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep("joins the table", handLong, fixed = T)]
+  }
+  if(length(grep(" said, ", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep(" said, ", handLong, fixed = T)]
+  }
+  if(length(grep("Uncalled bet ", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep("Uncalled bet ", handLong, fixed = T)]
+  }
+  if(length(grep(" collected", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep(" collected", handLong, fixed = T)]
+  }
+  if(length(grep(" is disconnected", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep(" is disconnected", handLong, fixed = T)]
+  }
+  if(length(grep(" is sitting out", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep(" is sitting out", handLong, fixed = T)]
+  }
+  if(length(grep("was removed from the table", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep("was removed from the table", handLong, fixed = T)]
+  }
+  if(length(grep("is connected", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep("is connected", handLong, fixed = T)]
   }
   
-  close(con)
-  
-  return(hands)
+  return(handLong)
 }
 
-hands <- processFile("hands-6_18_17.txt")
 
-
-df <- data.frame(hand = integer(0), BBSize = integer(0), JamesPos = character(0), JamesCard1 = character(0),
-           JamesCard2 = character(0), JamesStack = numeric(0),
-           JamesAction = character(0), JamesAmount = integer(0),
-           street = character(0), pot = numeric(0), comCard1 = character(0),
-           comCard2 = character(0), comCard3 = character(0),
-           comCard4 = character(0), comCard5 = character(0), Op1Name = character(0), 
-           Op1Action = character(0), OP1Amount = integer(0), Op1Stack = numeric(0),
-           Op1VPIP = numeric(0), Op1PFR = numeric(0), Op13Bet = numeric(0), Op1NumHands = integer(0),
-           Op1HasCards = logical(0), Op2Name = character(0), Op2Action = character(0),
-           OP2Amount = integer(0), Op2Stack = numeric(0),
-           Op2VPIP = numeric(0), Op2PFR = numeric(0), Op23Bet = numeric(0), Op2NumHands = integer(0),
-           Op2HasCards = logical(0), Op3Name = character(0), Op3Action = character(0),
-           OP3Amount = integer(0), Op3Stack = numeric(0),
-           Op3VPIP = numeric(0), Op3PFR = numeric(0), Op33Bet = numeric(0), Op3NumHands = integer(0),
-           Op3HasCards = logical(0),  Op4Name = character(0), Op4Action = character(0),
-           OP4Amount = integer(0), Op4Stack = numeric(0),
-           Op4VPIP = numeric(0), Op4PFR = numeric(0), Op43Bet = numeric(0), Op4NumHands = integer(0),
-           Op4HasCards = logical(0),  Op5Name = character(0), Op5Action = character(0),
-           OP5Amount = integer(0), Op5Stack = numeric(0),
-           Op5VPIP = numeric(0), Op5PFR = numeric(0), Op53Bet = numeric(0), Op5NumHands = integer(0),
-           Op5HasCards = logical(0), stringsAsFactors=FALSE)
-
-################################################################################
-
-preProcessData <- preProcess(hands[[1]])
-proFlopData <- preFlop(hands[[1]], numPlayers, JamesPos)
-playerNames <- setPlayerNames(hands[[1]],numPlayers, JamesPos)
 
 preFlop <- function(hand, numPlayers, JamesPos){
   lineNum <- grep("Pre Flop:", hand)
@@ -232,7 +201,7 @@ setPlayerNames <- function(hand, numPlayers, JamesPos){
 }
 
 
-preProcess <- function(hand, breakPoints) {
+preProcess1 <- function(hand, breakPoints) {
   JamesPos <- strsplit(hand[grep("Hero", hand, fixed = T)[1]], " ")[[1]][2]
   JamesPos <- substring(JamesPos, 2)
   JamesPos <- strtrim(JamesPos, nchar(JamesPos) - 2)
@@ -241,7 +210,9 @@ preProcess <- function(hand, breakPoints) {
   
   intro <- hand[grep("VPIP:", hand, fixed = T)]
   
-  numPlayers <- length(intro) + 1
+  nums <- unique(na.omit(as.numeric(unlist(strsplit(unlist(hand[1]), "[^0-9]+")))))
+  
+  numPlayers <- nums[length(nums)]
 
   BBline <- grep("BB:", intro)
   SBline <- grep("SB:", intro)
@@ -258,35 +229,35 @@ preProcess <- function(hand, breakPoints) {
   UTGInfo <- NULL
   
   if(length(BBline) > 0){
-    BBInfo <- processPlayer(intro[BBline])
+    BBInfo <- processPlayer1(intro[BBline])
   }
   
   if(length(SBline) > 0){
-    SBInfo <- processPlayer(intro[SBline])
+    SBInfo <- processPlayer1(intro[SBline])
   }
   
   if(length(BTNline) > 0){
-    BTNInfo <- processPlayer(intro[BTNline])
+    BTNInfo <- processPlayer1(intro[BTNline])
   }
   
   if(length(COline) > 0){
-    COInfo <- processPlayer(intro[COline])
+    COInfo <- processPlayer1(intro[COline])
   }
   
   if(length(MPline) > 0){
-    MPInfo <- processPlayer(intro[MPline])
+    MPInfo <- processPlayer1(intro[MPline])
   }
   
   if(length(UTGline) > 0){
-    UTGInfo <- processPlayer(intro[UTGline])
+    UTGInfo <- processPlayer1(intro[UTGline])
   }
 
-  return(list(numPlayers = numPlayers, BBInfo = BBInfo, SBInfo = SBInfo,
-              BTNInfo = BTNInfo, COInfo = COInfo, MPInfo = MPInfo,
-              UTGInfo = UTGInfo, bbAmount = bbAmount))
+  return(list(numPlayers = numPlayers, JamesPos = JamesPos, BBInfo = BBInfo,
+              SBInfo = SBInfo, BTNInfo = BTNInfo, COInfo = COInfo,
+              MPInfo = MPInfo, UTGInfo = UTGInfo, bbAmount = bbAmount))
 }
 
-processPlayer <- function(line) {
+processPlayer1 <- function(line) {
   
   playerInfo <- list(chipCounts = numeric(0), VPIP = numeric(0), PFR = numeric(0),
                      ThreeBet = numeric(0), hands = integer(0))
@@ -302,6 +273,51 @@ processPlayer <- function(line) {
   return(playerInfo)
 } 
 
-
-
 ################################################################################
+# Long hand functions
+################################################################################
+
+getBreakpoints <- function(hand) {
+  breakPoints <- grep("***", hand, fixed = T)
+  return(breakPoints)
+}
+
+preProcess2 <- function(hand, breakPoints) {
+  intro <- hand[1:(breakPoints[1] - 1)]
+  handNum <- as.numeric(substring(strsplit(hand[1], " ")[[1]][3], 2, last = 13))
+  seats <- grep("Seat [[:digit:]]", intro)
+  playerInfo <- processPlayer2(intro, seats)
+  smallBlindInd <- grep("small blind", intro, fixed = T)[1]
+  if(!is.na(smallBlindInd)) {
+    smallBlind <- strsplit(intro[smallBlindInd], ":")[[1]][1]
+  }
+  bigBlindInd <- grep("big blind", intro, fixed = T)[1]
+  bigBlind <- strsplit(intro[bigBlindInd], ":")
+  bigBlindPlayer <- bigBlind[[1]][1]
+  bigBlindAmt <- as.numeric(gsub("[^0-9]+", "", bigBlind[[1]][2]))
+  pot <- 1.5 * bigBlindAmt
+  for (i in 1:nrow(playerInfo)) {
+    if (playerInfo[i, 1] == smallBlind) {
+      playerInfo[i, 2] <- playerInfo[i, 2] - (bigBlindAmt / 2)
+    }
+    if (playerInfo[i, 1] == bigBlindPlayer) {
+      playerInfo[i, 2] <- playerInfo[i, 2] - bigBlindAmt
+    }
+  }
+  return(list(handNum = handNum, pot = pot, playerInfo = playerInfo, bigBlindPlayer = bigBlindPlayer, bigBlindAmt = bigBlindAmt))
+}
+
+processPlayer2 <- function(intro, seats) {
+  seatsText <- intro[seats]
+  jamesPos <- grep(paste(screenName), seatsText, fixed = T)
+  playerInfo <- data.frame(names = character(0), chipCounts = integer(0), stringsAsFactors = F)
+  if(jamesPos > 1){
+    seatsText <- c(seatsText[jamesPos:length(seatsText)], seatsText[1:(jamesPos - 1)])
+  }
+  split <- strsplit(seatsText, " \\(")
+  for (i in 1:length(seatsText)) {
+    playerInfo[i, 1] <- substr(split[[i]][1], 9, nchar(split[[i]][1]))
+    playerInfo[i, 2] <- as.numeric(gsub("[^0-9]+", "", split[[i]][2]))
+  }
+  return(playerInfo)
+} 
