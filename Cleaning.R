@@ -1,42 +1,5 @@
 
 
-cleanLong <- function(handLong){
-  if(length(grep("has timed out", handLong, fixed = T)) > 0){
-    handLong <- handLong[-grep("has timed out", handLong, fixed = T)]
-  }
-  if(length(grep("leaves the table", handLong, fixed = T)) > 0){
-    handLong <- handLong[-grep("leaves the table", handLong, fixed = T)]
-  }
-  if(length(grep("joins the table", handLong, fixed = T)) > 0){
-    handLong <- handLong[-grep("joins the table", handLong, fixed = T)]
-  }
-  if(length(grep(" said, ", handLong, fixed = T)) > 0){
-    handLong <- handLong[-grep(" said, ", handLong, fixed = T)]
-  }
-  if(length(grep("Uncalled bet ", handLong, fixed = T)) > 0){
-    handLong <- handLong[-grep("Uncalled bet ", handLong, fixed = T)]
-  }
-  if(length(grep(" collected", handLong, fixed = T)) > 0){
-    handLong <- handLong[-grep(" collected", handLong, fixed = T)]
-  }
-  if(length(grep(" is disconnected", handLong, fixed = T)) > 0){
-    handLong <- handLong[-grep(" is disconnected", handLong, fixed = T)]
-  }
-  if(length(grep(" is sitting out", handLong, fixed = T)) > 0){
-    handLong <- handLong[-grep(" is sitting out", handLong, fixed = T)]
-  }
-  if(length(grep("was removed from the table", handLong, fixed = T)) > 0){
-    handLong <- handLong[-grep("was removed from the table", handLong, fixed = T)]
-  }
-  if(length(grep("is connected", handLong, fixed = T)) > 0){
-    handLong <- handLong[-grep("is connected", handLong, fixed = T)]
-  }
-  
-  return(handLong)
-}
-
-
-
 preFlop <- function(hand, numPlayers, JamesPos){
   lineNum <- grep("Pre Flop:", hand)
   
@@ -277,6 +240,41 @@ processPlayer1 <- function(line) {
 # Long hand functions
 ################################################################################
 
+cleanLong <- function(handLong){
+  if(length(grep("has timed out", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep("has timed out", handLong, fixed = T)]
+  }
+  if(length(grep("leaves the table", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep("leaves the table", handLong, fixed = T)]
+  }
+  if(length(grep("joins the table", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep("joins the table", handLong, fixed = T)]
+  }
+  if(length(grep(" said, ", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep(" said, ", handLong, fixed = T)]
+  }
+  if(length(grep("Uncalled bet ", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep("Uncalled bet ", handLong, fixed = T)]
+  }
+  if(length(grep(" collected", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep(" collected", handLong, fixed = T)]
+  }
+  if(length(grep(" is disconnected", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep(" is disconnected", handLong, fixed = T)]
+  }
+  if(length(grep(" is sitting out", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep(" is sitting out", handLong, fixed = T)]
+  }
+  if(length(grep("was removed from the table", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep("was removed from the table", handLong, fixed = T)]
+  }
+  if(length(grep("is connected", handLong, fixed = T)) > 0){
+    handLong <- handLong[-grep("is connected", handLong, fixed = T)]
+  }
+  
+  return(handLong)
+}
+
 getBreakpoints <- function(hand) {
   breakPoints <- grep("***", hand, fixed = T)
   return(breakPoints)
@@ -394,18 +392,20 @@ processLine <- function(line, allin = F) {
   return(list(name = name, action = action, amt = amt, allin = allin))
 }
 
-# setStartVals <- function(df, playerInfo){
-#   # start has cards to false for last 4 players since there must always be 2
-#   df[1,c(30,35,40)] <- F
-#   # always setting preflop pot to 1 big and 1 small blind for now
-#   df[1,10] <- df[1,41]*1.5
-#   # setting my stack size to start the hand 
-#   df[1,5] <- playerInfo[1,2]
-#   # setting each players stack size and that they have cards to start
-#   for(i in 1:(nrow(playerInfo) - 1)){
-#     df[1,i*5 + 11] <- playerInfo[i + 1, 1]
-#     df[1,i*5 + 14] <- playerInfo[i + 1, 2]
-#     df[1,i*5 + 15] <- T
-#   }
-#   return(df)
-# }
+setStartVals <- function(df, playerInfo){
+  # start has cards to false for last 4 players since there must always be 2
+  df[1,c(46,56,66)] <- F
+  # setting my stack size to start the hand
+  df[1,6] <- playerInfo[1,2]
+  # # setting each players stack size and that they have cards to start
+  # for(i in 1:(nrow(playerInfo) - 1)){
+  #   df[1,i*5 + 11] <- playerInfo[i + 1, 1]
+  #   df[1,i*5 + 14] <- playerInfo[i + 1, 2]
+  #   df[1,i*5 + 15] <- T
+  # }
+  
+  # if statements for each pos. to see if have cards then find name and fill in info
+  # or new function to get order of positions in df
+  return(df)
+}
+

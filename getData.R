@@ -77,8 +77,9 @@ preProcessData1 <- preProcess1(handShort)
 proFlopData <- preFlop(handShort, preProcessData$numPlayers, preProcessData$JamesPos)
 playerNames <- setPlayerNames(handShort, preProcessData$numPlayers, preProcessData$JamesPos)
 breakPoints <- getBreakpoints(handLong)
-
-# df <- setStartVals(df, preProcessData$playerInfo)
+# maybe get player order function 
+# df <- setStartVals(df, preProcessData1)
 preProcessData2 <- preProcess2(handLong, breakPoints)
 preFlop <- preFlopFun(handLong, df, breakPoints)
 df <- preFlop[[1]]
+
