@@ -22,152 +22,123 @@ preFlop <- function(hand, numPlayers, JamesPos){
   return(list(pot = pot, JamesCard1 = JamesCard1, JamesCard2 = JamesCard2))
 }
 
-setPlayerNames <- function(hand, numPlayers, JamesPos){
+setPlayerNames <- function(df, numPlayers, JamesPos){
   
-  playerList <- list(Op1Name = character(0), Op2Name = character(0),
-                     Op3Name = character(0), Op4Name = character(0),
-                     Op5Name = character(0))
+  df[1,c(18,28,38,48,58)] <- "None"
   
   if(numPlayers == 6){
     if(JamesPos == "UTG"){
-      playerList$Op1Name <- "BB"
-      playerList$Op2Name <- "SB"
-      playerList$Op3Name <- "BTN"
-      playerList$Op4Name <- "CO"
-      playerList$Op5Name <- "MP"
+      df$Op1Name <- "BB"
+      df$Op2Name <- "SB"
+      df$Op3Name <- "BTN"
+      df$Op4Name <- "CO"
+      df$Op5Name <- "MP"
     }else if(JamesPos == "MP"){
-      playerList$Op1Name <- "UTG"
-      playerList$Op2Name <- "BB"
-      playerList$Op3Name <- "SB"
-      playerList$Op4Name <- "BTN"
-      playerList$Op5Name <- "CO"
+      df$Op1Name <- "UTG"
+      df$Op2Name <- "BB"
+      df$Op3Name <- "SB"
+      df$Op4Name <- "BTN"
+      df$Op5Name <- "CO"
     }else if(JamesPos == "CO"){
-      playerList$Op1Name <- "MP"
-      playerList$Op2Name <- "UTG"
-      playerList$Op3Name <- "BB"
-      playerList$Op4Name <- "SB"
-      playerList$Op5Name <- "BTN"
+      df$Op1Name <- "MP"
+      df$Op2Name <- "UTG"
+      df$Op3Name <- "BB"
+      df$Op4Name <- "SB"
+      df$Op5Name <- "BTN"
     }else if(JamesPos == "BTN"){
-      playerList$Op1Name <- "CO"
-      playerList$Op2Name <- "MP"
-      playerList$Op3Name <- "UTG"
-      playerList$Op4Name <- "BB"
-      playerList$Op5Name <- "SB"
+      df$Op1Name <- "CO"
+      df$Op2Name <- "MP"
+      df$Op3Name <- "UTG"
+      df$Op4Name <- "BB"
+      df$Op5Name <- "SB"
     }else if(JamesPos == "SB"){
-      playerList$Op1Name <- "BTN"
-      playerList$Op2Name <- "CO"
-      playerList$Op3Name <- "MP"
-      playerList$Op4Name <- "UTG"
-      playerList$Op5Name <- "BB"
+      df$Op1Name <- "BTN"
+      df$Op2Name <- "CO"
+      df$Op3Name <- "MP"
+      df$Op4Name <- "UTG"
+      df$Op5Name <- "BB"
     }else{
-      playerList$Op1Name <- "SB"
-      playerList$Op2Name <- "BTN"
-      playerList$Op3Name <- "CO"
-      playerList$Op4Name <- "MP"
-      playerList$Op5Name <- "UTG"
+      df$Op1Name <- "SB"
+      df$Op2Name <- "BTN"
+      df$Op3Name <- "CO"
+      df$Op4Name <- "MP"
+      df$Op5Name <- "UTG"
     }
   }else if(numPlayers == 5){
     if(JamesPos == "UTG"){
-      playerList$Op1Name <- "BB"
-      playerList$Op2Name <- "SB"
-      playerList$Op3Name <- "BTN"
-      playerList$Op4Name <- "CO"
-      playerList$Op5Name <- NULL
+      df$Op1Name <- "BB"
+      df$Op2Name <- "SB"
+      df$Op3Name <- "BTN"
+      df$Op4Name <- "CO"
     }else if(JamesPos == "CO"){
-      playerList$Op1Name <- "UTG"
-      playerList$Op2Name <- "BB"
-      playerList$Op3Name <- "SB"
-      playerList$Op4Name <- "BTN"
-      playerList$Op5Name <- NULL
+      df$Op1Name <- "UTG"
+      df$Op2Name <- "BB"
+      df$Op3Name <- "SB"
+      df$Op4Name <- "BTN"
     }else if(JamesPos == "BTN"){
-      playerList$Op1Name <- "CO"
-      playerList$Op2Name <- "UTG"
-      playerList$Op3Name <- "BB"
-      playerList$Op4Name <- "SB"
-      playerList$Op5Name <- NULL
+      df$Op1Name <- "CO"
+      df$Op2Name <- "UTG"
+      df$Op3Name <- "BB"
+      df$Op4Name <- "SB"
     }else if(JamesPos == "SB"){
-      playerList$Op1Name <- "BTN"
-      playerList$Op2Name <- "CO"
-      playerList$Op3Name <- "UTG"
-      playerList$Op4Name <- "BB"
-      playerList$Op5Name <- NULL
+      df$Op1Name <- "BTN"
+      df$Op2Name <- "CO"
+      df$Op3Name <- "UTG"
+      df$Op4Name <- "BB"
     }else{
-      playerList$Op1Name <- "SB"
-      playerList$Op2Name <- "BTN"
-      playerList$Op3Name <- "CO"
-      playerList$Op4Name <- "UTG"
-      playerList$Op5Name <- NULL
+      df$Op1Name <- "SB"
+      df$Op2Name <- "BTN"
+      df$Op3Name <- "CO"
+      df$Op4Name <- "UTG"
     }
   }else if(numPlayers == 4){
     if(JamesPos == "CO"){
-      playerList$Op1Name <- "BB"
-      playerList$Op2Name <- "SB"
-      playerList$Op3Name <- "BTN"
-      playerList$Op4Name <- NULL
-      playerList$Op5Name <- NULL
+      df$Op1Name <- "BB"
+      df$Op2Name <- "SB"
+      df$Op3Name <- "BTN"
     }else if(JamesPos == "BTN"){
-      playerList$Op1Name <- "CO"
-      playerList$Op2Name <- "BB"
-      playerList$Op3Name <- "SB"
-      playerList$Op4Name <- NULL
-      playerList$Op5Name <- NULL
+      df$Op1Name <- "CO"
+      df$Op2Name <- "BB"
+      df$Op3Name <- "SB"
     }else if(JamesPos == "SB"){
-      playerList$Op1Name <- "BTN"
-      playerList$Op2Name <- "CO"
-      playerList$Op3Name <- "BB"
-      playerList$Op4Name <- NULL
-      playerList$Op5Name <- NULL
+      df$Op1Name <- "BTN"
+      df$Op2Name <- "CO"
+      df$Op3Name <- "BB"
     }else{
-      playerList$Op1Name <- "SB"
-      playerList$Op2Name <- "BTN"
-      playerList$Op3Name <- "CO"
-      playerList$Op4Name <- NULL
-      playerList$Op5Name <- NULL
+      df$Op1Name <- "SB"
+      df$Op2Name <- "BTN"
+      df$Op3Name <- "CO"
     }
   }else if(numPlayers == 3){
     if(JamesPos == "BTN"){
-      playerList$Op1Name <- "BB"
-      playerList$Op2Name <- "SB"
-      playerList$Op3Name <- NULL
-      playerList$Op4Name <- NULL
-      playerList$Op5Name <- NULL
+      df$Op1Name <- "BB"
+      df$Op2Name <- "SB"
     }else if(JamesPos == "SB"){
-      playerList$Op1Name <- "BB"
-      playerList$Op2Name <- "BTN"
-      playerList$Op3Name <- NULL
-      playerList$Op4Name <- NULL
-      playerList$Op5Name <- NULL
+      df$Op1Name <- "BB"
+      df$Op2Name <- "BTN"
     }else{
-      playerList$Op1Name <- "BTN"
-      playerList$Op2Name <- "SB"
-      playerList$Op3Name <- NULL
-      playerList$Op4Name <- NULL
-      playerList$Op5Name <- NULL
+      df$Op1Name <- "BTN"
+      df$Op2Name <- "SB"
     }
   }else {
     if(JamesPos == "SB"){
-      playerList$Op1Name <- "BB"
-      playerList$Op2Name <- NULL
-      playerList$Op3Name <- NULL
-      playerList$Op4Name <- NULL
-      playerList$Op5Name <- NULL
+      df$Op1Name <- "BB"
     }else{
-      playerList$Op1Name <- "SB"
-      playerList$Op2Name <- NULL
-      playerList$Op3Name <- NULL
-      playerList$Op4Name <- NULL
-      playerList$Op5Name <- NULL
+      df$Op1Name <- "SB"
     }
   }
   
-  return(playerList)
+  return(df)
 }
 
+hand <- hands[[1]]
 
 preProcess1 <- function(hand, breakPoints) {
   JamesPos <- strsplit(hand[grep("Hero", hand, fixed = T)[1]], " ")[[1]][2]
   JamesPos <- substring(JamesPos, 2)
   JamesPos <- strtrim(JamesPos, nchar(JamesPos) - 2)
+  
+  JamesStack <- as.numeric(strsplit(hand[grep("Hero", hand, fixed = T)[1]], " ")[[1]][3])
   
   bbAmount <- unique(na.omit(as.numeric(unlist(strsplit(unlist(hand[1]), "[^0-9]+")))))[1]
   
@@ -215,8 +186,8 @@ preProcess1 <- function(hand, breakPoints) {
     UTGInfo <- processPlayer1(intro[UTGline])
   }
 
-  return(list(numPlayers = numPlayers, JamesPos = JamesPos, BBInfo = BBInfo,
-              SBInfo = SBInfo, BTNInfo = BTNInfo, COInfo = COInfo,
+  return(list(numPlayers = numPlayers, JamesPos = JamesPos, JamesStack = JamesStack,
+              BBInfo = BBInfo, SBInfo = SBInfo, BTNInfo = BTNInfo, COInfo = COInfo,
               MPInfo = MPInfo, UTGInfo = UTGInfo, bbAmount = bbAmount))
 }
 
@@ -396,16 +367,53 @@ setStartVals <- function(df, playerInfo){
   # start has cards to false for last 4 players since there must always be 2
   df[1,c(46,56,66)] <- F
   # setting my stack size to start the hand
-  df[1,6] <- playerInfo[1,2]
-  # # setting each players stack size and that they have cards to start
-  # for(i in 1:(nrow(playerInfo) - 1)){
-  #   df[1,i*5 + 11] <- playerInfo[i + 1, 1]
-  #   df[1,i*5 + 14] <- playerInfo[i + 1, 2]
-  #   df[1,i*5 + 15] <- T
-  # }
-  
-  # if statements for each pos. to see if have cards then find name and fill in info
-  # or new function to get order of positions in df
+  df[1,6] <- playerInfo$JamesStack
+  # setting each players stack size and that they have cards to start
+  for(i in c(21,31,41,51,61)){
+    if(df[1,i - 2] == "BB"){
+      df[1,i] <- playerInfo$BBInfo$chipCounts
+      df[1,i + 1] <- playerInfo$BBInfo$VPIP
+      df[1,i + 2] <- playerInfo$BBInfo$PFR
+      df[1,i + 3] <- playerInfo$BBInfo$ThreeBet
+      df[1,i + 4] <- playerInfo$BBInfo$hands
+      df[1,i + 5] <- T
+    } else if(df[1,i - 2] == "SB"){
+      df[1,i] <- playerInfo$SBInfo$chipCounts
+      df[1,i + 1] <- playerInfo$SBInfo$VPIP
+      df[1,i + 2] <- playerInfo$SBInfo$PFR
+      df[1,i + 3] <- playerInfo$SBInfo$ThreeBet
+      df[1,i + 4] <- playerInfo$SBInfo$hands
+      df[1,i + 5] <- T
+    } else if(df[1,i - 2] == "BTN"){
+      df[1,i] <- playerInfo$BTNInfo$chipCounts
+      df[1,i + 1] <- playerInfo$BTNInfo$VPIP
+      df[1,i + 2] <- playerInfo$BTNInfo$PFR
+      df[1,i + 3] <- playerInfo$BTNInfo$ThreeBet
+      df[1,i + 4] <- playerInfo$BTNInfo$hands
+      df[1,i + 5] <- T
+    } else if(df[1,i - 2] == "CO"){
+      df[1,i] <- playerInfo$COInfo$chipCounts
+      df[1,i + 1] <- playerInfo$COInfo$VPIP
+      df[1,i + 2] <- playerInfo$COInfo$PFR
+      df[1,i + 3] <- playerInfo$COInfo$ThreeBet
+      df[1,i + 4] <- playerInfo$COInfo$hands
+      df[1,i + 5] <- T
+    } else if(df[1,i - 2] == "MP"){
+      df[1,i] <- playerInfo$MPInfo$chipCounts
+      df[1,i + 1] <- playerInfo$MPInfo$VPIP
+      df[1,i + 2] <- playerInfo$MPInfo$PFR
+      df[1,i + 3] <- playerInfo$MPInfo$ThreeBet
+      df[1,i + 4] <- playerInfo$MPInfo$hands
+      df[1,i + 5] <- T
+    } else if(df[1,i - 2] == "UTG"){
+      df[1,i] <- playerInfo$UTGInfo$chipCounts
+      df[1,i + 1] <- playerInfo$UTGInfo$VPIP
+      df[1,i + 2] <- playerInfo$UTGInfo$PFR
+      df[1,i + 3] <- playerInfo$UTGInfo$ThreeBet
+      df[1,i + 4] <- playerInfo$UTGInfo$hands
+      df[1,i + 5] <- T
+    }
+  }
   return(df)
 }
 

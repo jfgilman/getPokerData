@@ -3,6 +3,9 @@ rm(list = ls())
 # Windows
 setwd("C:/Users/mjahja/Desktop/Research/Poker/Data")
 
+# Mac
+setwd("~/Desktop/PokerHands/HandsBoth")
+
 processFile = function(filepath) {
   con = file(filepath, "r")
   hands <- list()
@@ -44,12 +47,14 @@ screenName <- "LL-Poker1"
 handLong <- hands[[1]][grep("PokerStars Hand #",hands[[1]]):length(hands[[1]])]
 handShort <- hands[[1]][1:(grep("PokerStars Hand #",hands[[1]])-2)]
 
-handLong <- cleanLong(handLong)
-
 #Windows
 setwd("C:/Users/mjahja/Desktop/Research/Poker/getPokerData")
+# Mac
+setwd("~/Desktop/getPokerData")
 
 source("Cleaning.R")
+
+handLong <- cleanLong(handLong)
 
 df <- data.frame(handNum = integer(0), BBSize = integer(0), JamesPos = character(0), JamesCard1 = character(0),
                  JamesCard2 = character(0), JamesStack = numeric(0), JamesName = character(0),
@@ -59,7 +64,7 @@ df <- data.frame(handNum = integer(0), BBSize = integer(0), JamesPos = character
                  comCard4 = character(0), comCard5 = character(0), Op1Pos = character(0),  Op1Name = character(0),
                  Op1Action = character(0), OP1Amount = integer(0), Op1Stack = numeric(0),
                  Op1VPIP = numeric(0), Op1PFR = numeric(0), Op13Bet = numeric(0), Op1NumHands = integer(0),
-                 Op1HasCards = logical(0), Op2Pos = character(0),  Op2Name = character(0), Op2Action = character(0),
+                 Op1HasCards = logical(0), Op2Pos = character(0), Op2Name = character(0), Op2Action = character(0),
                  OP2Amount = integer(0), Op2Stack = numeric(0),
                  Op2VPIP = numeric(0), Op2PFR = numeric(0), Op23Bet = numeric(0), Op2NumHands = integer(0),
                  Op2HasCards = logical(0), Op3Pos = character(0),  Op3Name = character(0), Op3Action = character(0),
@@ -74,11 +79,11 @@ df <- data.frame(handNum = integer(0), BBSize = integer(0), JamesPos = character
                  Op5HasCards = logical(0), stringsAsFactors=FALSE)
 
 preProcessData1 <- preProcess1(handShort)
-proFlopData <- preFlop(handShort, preProcessData$numPlayers, preProcessData$JamesPos)
-playerNames <- setPlayerNames(handShort, preProcessData$numPlayers, preProcessData$JamesPos)
+proFlopData <- preFlop(handShort, preProcessData1$numPlayers, preProcessData1$JamesPos)
+df <- setPlayerNames(df, preProcessData1$numPlayers, preProcessData1$JamesPos)
 breakPoints <- getBreakpoints(handLong)
-# maybe get player order function 
-# df <- setStartVals(df, preProcessData1)
+
+df <- setStartVals(df, preProcessData1)
 preProcessData2 <- preProcess2(handLong, breakPoints)
 preFlop <- preFlopFun(handLong, df, breakPoints)
 df <- preFlop[[1]]
