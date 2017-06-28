@@ -18,7 +18,7 @@ for i in range(0, numHands):
     pyautogui.hotkey('return')
     pyautogui.hotkey('return')
 
-numHands = 1102
+numHands = 8172
 
 buttonSpot = [220, 106]
 buttonSpot2 = [273, 106]
@@ -31,7 +31,7 @@ for i in range(0, numHands):
     time.sleep(0.01)
     pyautogui.hotkey('command', 'v')
     pyautogui.hotkey('return')
-    pyautogui.typewrite('------')
+    pyautogui.typewrite('---')
     pyautogui.hotkey('return')
     time.sleep(0.01)
     pyautogui.click(buttonSpot2)

@@ -370,42 +370,42 @@ setStartVals <- function(df, playerInfo){
   df[1,6] <- playerInfo$JamesStack
   # setting each players stack size and that they have cards to start
   for(i in c(21,31,41,51,61)){
-    if(df[1,i - 2] == "BB"){
+    if(df[1,i - 3] == "BB" & !is.null(playerInfo$BBInfo)){
       df[1,i] <- playerInfo$BBInfo$chipCounts
       df[1,i + 1] <- playerInfo$BBInfo$VPIP
       df[1,i + 2] <- playerInfo$BBInfo$PFR
       df[1,i + 3] <- playerInfo$BBInfo$ThreeBet
       df[1,i + 4] <- playerInfo$BBInfo$hands
       df[1,i + 5] <- T
-    } else if(df[1,i - 2] == "SB"){
+    } else if(df[1,i - 3] == "SB" & !is.null(playerInfo$SBInfo)){
       df[1,i] <- playerInfo$SBInfo$chipCounts
       df[1,i + 1] <- playerInfo$SBInfo$VPIP
       df[1,i + 2] <- playerInfo$SBInfo$PFR
       df[1,i + 3] <- playerInfo$SBInfo$ThreeBet
       df[1,i + 4] <- playerInfo$SBInfo$hands
       df[1,i + 5] <- T
-    } else if(df[1,i - 2] == "BTN"){
+    } else if(df[1,i - 3] == "BTN" & !is.null(playerInfo$BTNInfo)){
       df[1,i] <- playerInfo$BTNInfo$chipCounts
       df[1,i + 1] <- playerInfo$BTNInfo$VPIP
       df[1,i + 2] <- playerInfo$BTNInfo$PFR
       df[1,i + 3] <- playerInfo$BTNInfo$ThreeBet
       df[1,i + 4] <- playerInfo$BTNInfo$hands
       df[1,i + 5] <- T
-    } else if(df[1,i - 2] == "CO"){
+    } else if(df[1,i - 3] == "CO" & !is.null(playerInfo$COInfo)){
       df[1,i] <- playerInfo$COInfo$chipCounts
       df[1,i + 1] <- playerInfo$COInfo$VPIP
       df[1,i + 2] <- playerInfo$COInfo$PFR
       df[1,i + 3] <- playerInfo$COInfo$ThreeBet
       df[1,i + 4] <- playerInfo$COInfo$hands
       df[1,i + 5] <- T
-    } else if(df[1,i - 2] == "MP"){
+    } else if(df[1,i - 3] == "MP" & !is.null(playerInfo$MPInfo)){
       df[1,i] <- playerInfo$MPInfo$chipCounts
       df[1,i + 1] <- playerInfo$MPInfo$VPIP
       df[1,i + 2] <- playerInfo$MPInfo$PFR
       df[1,i + 3] <- playerInfo$MPInfo$ThreeBet
       df[1,i + 4] <- playerInfo$MPInfo$hands
       df[1,i + 5] <- T
-    } else if(df[1,i - 2] == "UTG"){
+    } else if(df[1,i - 3] == "UTG" & !is.null(playerInfo$UTGInfo)){
       df[1,i] <- playerInfo$UTGInfo$chipCounts
       df[1,i + 1] <- playerInfo$UTGInfo$VPIP
       df[1,i + 2] <- playerInfo$UTGInfo$PFR
