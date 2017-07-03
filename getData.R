@@ -44,8 +44,10 @@ processFile = function(filepath) {
 hands <- processFile("100NL.txt")
 screenName <- "LL-Poker1"
 
-handLong <- hands[[1]][grep("PokerStars Hand #",hands[[1]]):length(hands[[1]])]
-handShort <- hands[[1]][1:(grep("PokerStars Hand #",hands[[1]])-2)]
+testNum <- 27
+
+handLong <- hands[[testNum]][grep("PokerStars Hand #",hands[[testNum]]):length(hands[[testNum]])]
+handShort <- hands[[testNum]][1:(grep("PokerStars Hand #",hands[[testNum]])-2)]
 
 #Windows
 setwd("C:/Users/mjahja/Desktop/Research/Poker/getPokerData")
@@ -79,7 +81,7 @@ df <- data.frame(handNum = integer(0), BBSize = integer(0), JamesPos = character
                  Op5HasCards = logical(0), stringsAsFactors=FALSE)
 
 preProcessData1 <- preProcess1(handShort)
-preFlopData <- preFlop(handShort, preProcessData1$numPlayers, preProcessData1$JamesPos)
+preFlopData <- preFlopD(handShort, preProcessData1$numPlayers, preProcessData1$JamesPos)
 df <- setPlayerNames(df, preProcessData1$numPlayers, preProcessData1$JamesPos)
 df$JamesCard1 <- preFlopData$JamesCard1
 df$JamesCard2 <- preFlopData$JamesCard2
@@ -89,8 +91,47 @@ breakPoints <- getBreakpoints(handLong)
 
 df <- setStartVals(df, preProcessData1, preProcessData1$numPlayers)
 preProcessData2 <- preProcess2(handLong, breakPoints)
+df <- setNames(df, preProcessData2$playerInfo$names)
 df$handNum <- preProcessData2$handNum
 df$BBSize <- preProcessData2$bigBlindAmt
+df$pot <- preFlopData$pot
 preFlop <- preFlopFun(handLong, df, breakPoints)
 df <- preFlop[[1]]
+
+if(length(breakPoints) > 2){
+  if(df$JamesAction[nrow(df)] != "folds" && df$JamesAction[nrow(df)] != "doesn't"
+     && !preFlop$allin && (breakPoints[3] - breakPoints[2]) > 1){
+    flop <- flopFun(handLong, df, breakPoints)
+    df <- flop[[1]]
+  } else {
+    flop <- list(df = df, finalTriplets = NA, allin = F)
+  }
+} else {
+  flop <- list(df = df, finalTriplets = NA, allin = F)
+}
+
+if(length(breakPoints) > 3){
+  if(df$JamesAction[nrow(df)] != "folds" && df$JamesAction[nrow(df)] != "doesn't"
+     && !preFlop$allin && !flop$allin && (breakPoints[4] - breakPoints[3]) > 1){
+    turn <- turnFun(handLong, df, breakPoints)
+    df <- turn[[1]]
+  } else {
+    turn <- list(df = df, finalTriplets = NA, allin = F)
+  }
+} else {
+  turn <- list(df = df, finalTriplets = NA, allin = F)
+}
+
+if(length(breakPoints) > 4){
+  if(df$JamesAction[nrow(df)] != "folds" && df$JamesAction[nrow(df)] != "doesn't"
+     && !preFlop$allin && !flop$allin && !turn$allin && (breakPoints[5] - breakPoints[4]) > 1){
+    river <- riverFun(handLong, df, breakPoints)
+    df <- river[[1]]
+  } else {
+    river <- list(df = df, finalTriplets = NA, allin = F)
+  }
+}else {
+  river <- list(df = df, finalTriplets = NA, allin = F)
+}
+
 

@@ -1,6 +1,6 @@
 
 
-preFlop <- function(hand, numPlayers, JamesPos){
+preFlopD <- function(hand, numPlayers, JamesPos){
   lineNum <- grep("Pre Flop:", hand)
   
   line <- strsplit(hand[lineNum], " ")
@@ -28,103 +28,103 @@ setPlayerNames <- function(df, numPlayers, JamesPos){
   
   if(numPlayers == 6){
     if(JamesPos == "UTG"){
-      df$Op1Name <- "BB"
-      df$Op2Name <- "SB"
-      df$Op3Name <- "BTN"
-      df$Op4Name <- "CO"
-      df$Op5Name <- "MP"
+      df$Op1Pos <- "BB"
+      df$Op2Pos <- "SB"
+      df$Op3Pos <- "BTN"
+      df$Op4Pos <- "CO"
+      df$Op5Pos <- "MP"
     }else if(JamesPos == "MP"){
-      df$Op1Name <- "UTG"
-      df$Op2Name <- "BB"
-      df$Op3Name <- "SB"
-      df$Op4Name <- "BTN"
-      df$Op5Name <- "CO"
+      df$Op1Pos <- "UTG"
+      df$Op2Pos <- "BB"
+      df$Op3Pos <- "SB"
+      df$Op4Pos <- "BTN"
+      df$Op5Pos <- "CO"
     }else if(JamesPos == "CO"){
-      df$Op1Name <- "MP"
-      df$Op2Name <- "UTG"
-      df$Op3Name <- "BB"
-      df$Op4Name <- "SB"
-      df$Op5Name <- "BTN"
+      df$Op1Pos <- "MP"
+      df$Op2Pos <- "UTG"
+      df$Op3Pos <- "BB"
+      df$Op4Pos <- "SB"
+      df$Op5Pos <- "BTN"
     }else if(JamesPos == "BTN"){
-      df$Op1Name <- "CO"
-      df$Op2Name <- "MP"
-      df$Op3Name <- "UTG"
-      df$Op4Name <- "BB"
-      df$Op5Name <- "SB"
+      df$Op1Pos <- "CO"
+      df$Op2Pos <- "MP"
+      df$Op3Pos <- "UTG"
+      df$Op4Pos <- "BB"
+      df$Op5Pos <- "SB"
     }else if(JamesPos == "SB"){
-      df$Op1Name <- "BTN"
-      df$Op2Name <- "CO"
-      df$Op3Name <- "MP"
-      df$Op4Name <- "UTG"
-      df$Op5Name <- "BB"
+      df$Op1Pos <- "BTN"
+      df$Op2Pos <- "CO"
+      df$Op3Pos <- "MP"
+      df$Op4Pos <- "UTG"
+      df$Op5Pos <- "BB"
     }else{
-      df$Op1Name <- "SB"
-      df$Op2Name <- "BTN"
-      df$Op3Name <- "CO"
-      df$Op4Name <- "MP"
-      df$Op5Name <- "UTG"
+      df$Op1Pos <- "SB"
+      df$Op2Pos <- "BTN"
+      df$Op3Pos <- "CO"
+      df$Op4Pos <- "MP"
+      df$Op5Pos <- "UTG"
     }
   }else if(numPlayers == 5){
     if(JamesPos == "UTG"){
-      df$Op1Name <- "BB"
-      df$Op2Name <- "SB"
-      df$Op3Name <- "BTN"
-      df$Op4Name <- "CO"
+      df$Op1Pos <- "BB"
+      df$Op2Pos <- "SB"
+      df$Op3Pos <- "BTN"
+      df$Op4Pos <- "CO"
     }else if(JamesPos == "CO"){
-      df$Op1Name <- "UTG"
-      df$Op2Name <- "BB"
-      df$Op3Name <- "SB"
-      df$Op4Name <- "BTN"
+      df$Op1Pos <- "UTG"
+      df$Op2Pos <- "BB"
+      df$Op3Pos <- "SB"
+      df$Op4Pos <- "BTN"
     }else if(JamesPos == "BTN"){
-      df$Op1Name <- "CO"
-      df$Op2Name <- "UTG"
-      df$Op3Name <- "BB"
-      df$Op4Name <- "SB"
+      df$Op1Pos <- "CO"
+      df$Op2Pos <- "UTG"
+      df$Op3Pos <- "BB"
+      df$Op4Pos <- "SB"
     }else if(JamesPos == "SB"){
-      df$Op1Name <- "BTN"
-      df$Op2Name <- "CO"
-      df$Op3Name <- "UTG"
-      df$Op4Name <- "BB"
+      df$Op1Pos <- "BTN"
+      df$Op2Pos <- "CO"
+      df$Op3Pos <- "UTG"
+      df$Op4Pos <- "BB"
     }else{
-      df$Op1Name <- "SB"
-      df$Op2Name <- "BTN"
-      df$Op3Name <- "CO"
-      df$Op4Name <- "UTG"
+      df$Op1Pos <- "SB"
+      df$Op2Pos <- "BTN"
+      df$Op3Pos <- "CO"
+      df$Op4Pos <- "UTG"
     }
   }else if(numPlayers == 4){
     if(JamesPos == "CO"){
-      df$Op1Name <- "BB"
-      df$Op2Name <- "SB"
-      df$Op3Name <- "BTN"
+      df$Op1Pos <- "BB"
+      df$Op2Pos <- "SB"
+      df$Op3Pos <- "BTN"
     }else if(JamesPos == "BTN"){
-      df$Op1Name <- "CO"
-      df$Op2Name <- "BB"
-      df$Op3Name <- "SB"
+      df$Op1Pos <- "CO"
+      df$Op2Pos <- "BB"
+      df$Op3Pos <- "SB"
     }else if(JamesPos == "SB"){
-      df$Op1Name <- "BTN"
-      df$Op2Name <- "CO"
-      df$Op3Name <- "BB"
+      df$Op1Pos <- "BTN"
+      df$Op2Pos <- "CO"
+      df$Op3Pos <- "BB"
     }else{
-      df$Op1Name <- "SB"
-      df$Op2Name <- "BTN"
-      df$Op3Name <- "CO"
+      df$Op1Pos <- "SB"
+      df$Op2Pos <- "BTN"
+      df$Op3Pos <- "CO"
     }
   }else if(numPlayers == 3){
     if(JamesPos == "BTN"){
-      df$Op1Name <- "BB"
-      df$Op2Name <- "SB"
+      df$Op1Pos <- "BB"
+      df$Op2Pos <- "SB"
     }else if(JamesPos == "SB"){
-      df$Op1Name <- "BB"
-      df$Op2Name <- "BTN"
+      df$Op1Pos <- "BB"
+      df$Op2Pos <- "BTN"
     }else{
-      df$Op1Name <- "BTN"
-      df$Op2Name <- "SB"
+      df$Op1Pos <- "BTN"
+      df$Op2Pos <- "SB"
     }
   }else {
     if(JamesPos == "SB"){
-      df$Op1Name <- "BB"
+      df$Op1Pos <- "BB"
     }else{
-      df$Op1Name <- "SB"
+      df$Op1Pos <- "SB"
     }
   }
   
@@ -289,7 +289,175 @@ processPlayer2 <- function(intro, seats) {
     playerInfo[i, 2] <- as.numeric(gsub("[^0-9]+", "", split[[i]][2]))
   }
   return(playerInfo)
-} 
+}
+
+riverFun <- function(hand, df, breakPoints, allin = F) {
+  adjAmt <- nrow(df)
+  card <- hand[(breakPoints[4])]
+  card <- substr(card, 30, 31)
+  
+  river <- hand[(breakPoints[4] + 1):(breakPoints[5] - 1)]
+  actionPoints <- c(0, grep(paste0(screenName, ":"), river))
+  numActions <- length(actionPoints) - 1
+  for (j in 1:numActions) {
+    triplets <- data.frame(name = character(0), action = character(0), amt = numeric(0),
+                           allin = logical(0), stringsAsFactors = F)
+    for (i in (actionPoints[j] + 1):actionPoints[j + 1]) {
+      triplet <- processLine(river[i], bbsize = df$BBSize)
+      triplets[i, 1] <- triplet$name
+      triplets[i, 2] <- triplet$action
+      triplets[i, 3] <- triplet$amt
+      triplets[i, 4] <- triplet$allin
+    }
+    # Update data frame
+    df[j + adjAmt, c(7:10, 16)] <- c(triplets[nrow(triplets), 1:3], "river", card[[1]][1])
+    if(triplets[nrow(triplets), 4]){
+      allin <- T
+    }
+    df[j + adjAmt, 12:15] <- df[j + adjAmt -1, 12:15]
+    if (is.na(triplets[1, 1])) {
+      triplets <- triplets[2:nrow(triplets),]
+    }
+    triplets <- triplets[rowSums(is.na(triplets)) < 2, ]
+    if(nrow(triplets) != 1){
+      for (k in 1:(nrow(triplets) - 1)) {
+        index <- which(df[1,] == triplets[k,1]) 
+        df[j + adjAmt, c(index:(index+2))] <- triplets[k, 1:3]
+      }
+    }
+  }
+  if (df[nrow(df), 8] != "folds") {
+    if (actionPoints[length(actionPoints)] != length(river)) {
+      finalTriplets <- data.frame(name = character(0), action = character(0), amt = numeric(0),
+                                  allin = logical(0), stringsAsFactors = F)
+      for (i in (actionPoints[length(actionPoints)] + 1):length(river)) {
+        triplet <- processLine(river[i], bbsize = df$BBSize)
+        finalTriplets[i - actionPoints[length(actionPoints)], 1] <- triplet$name
+        finalTriplets[i - actionPoints[length(actionPoints)], 2] <- triplet$action
+        finalTriplets[i - actionPoints[length(actionPoints)], 3] <- triplet$amt
+      }
+    } else {
+      finalTriplets = NA
+    }
+  } else {
+    finalTriplets = NA
+  }
+  return(list(df = df, finalTriplets = finalTriplets, turnCard = card, allin = allin))
+}
+
+turnFun <- function(hand, df, breakPoints, allin = F) {
+  adjAmt <- nrow(df)
+  card <- hand[(breakPoints[3])]
+  card <- substr(card, 26, 27)
+  
+  turn <- hand[(breakPoints[3] + 1):(breakPoints[4] - 1)]
+  actionPoints <- c(0, grep(paste0(screenName, ":"), turn))
+  numActions <- length(actionPoints) - 1
+  for (j in 1:numActions) {
+    triplets <- data.frame(name = character(0), action = character(0), amt = numeric(0),
+                           allin = logical(0), stringsAsFactors = F)
+    for (i in (actionPoints[j] + 1):actionPoints[j + 1]) {
+      triplet <- processLine(turn[i], bbsize = df$BBSize)
+      triplets[i, 1] <- triplet$name
+      triplets[i, 2] <- triplet$action
+      triplets[i, 3] <- triplet$amt
+      triplets[i, 4] <- triplet$allin
+    }
+    
+    # Update data frame
+    df[j + adjAmt, c(7:10, 15)] <- c(triplets[nrow(triplets), 1:3], "turn", card[[1]][1])
+    if(triplets[nrow(triplets), 4]){
+      allin <- T
+    }
+    df[j + adjAmt, 12:14] <- df[j + adjAmt -1, 12:14]
+    if (is.na(triplets[1, 1])) {
+      triplets <- triplets[2:nrow(triplets),]
+    }
+    triplets <- triplets[rowSums(is.na(triplets)) < 2, ]
+    if(nrow(triplets) != 1){
+      for (k in 1:(nrow(triplets) - 1)) {
+        
+        index <- which(df[1,] == triplets[k,1]) 
+        df[j + adjAmt, c(index:(index+2))] <- triplets[k, 1:3]
+      }
+    }
+  }
+  
+  if (df[nrow(df), 8] != "folds") {
+    if (actionPoints[length(actionPoints)] != length(turn)) {
+      finalTriplets <- data.frame(name = character(0), action = character(0), amt = numeric(0),
+                                  allin = logical(0), stringsAsFactors = F)
+      for (i in (actionPoints[length(actionPoints)] + 1):length(turn)) {
+        triplet <- processLine(turn[i], bbsize = df$BBSize)
+        finalTriplets[i - actionPoints[length(actionPoints)], 1] <- triplet$name
+        finalTriplets[i - actionPoints[length(actionPoints)], 2] <- triplet$action
+        finalTriplets[i - actionPoints[length(actionPoints)], 3] <- triplet$amt
+      }
+    } else {
+      finalTriplets = NA
+    }
+  } else {
+    finalTriplets = NA
+  }
+  return(list(df = df, finalTriplets = finalTriplets, turnCard = card, allin = allin))
+}
+
+flopFun <- function(hand, df, breakPoints, allin = F) {
+  adjAmt <- nrow(df)
+  cards <- hand[(breakPoints[2])]
+  cards <- substr(cards, 15, 22)
+  cards <- strsplit(cards, " ")
+  
+  flop <- hand[(breakPoints[2] + 1):(breakPoints[3] - 1)]
+  actionPoints <- c(0, grep(paste0(screenName, ":"), flop))
+  numActions <- length(actionPoints) - 1
+  for (j in 1:numActions) {
+    triplets <- data.frame(name = character(0), action = character(0), amt = numeric(0),
+                           allin = logical(0), stringsAsFactors = F)
+    for (i in (actionPoints[j] + 1):actionPoints[j + 1]) {
+      triplet <- processLine(flop[i], bbsize = df$BBSize)
+      triplets[i, 1] <- triplet$name
+      triplets[i, 2] <- triplet$action
+      triplets[i, 3] <- triplet$amt
+      triplets[i, 4] <- triplet$allin
+    }
+    # Update data frame
+    df[j + adjAmt, c(7:10, 12:14)] <- c(triplets[nrow(triplets), 1:3], "flop", cards[[1]][1], cards[[1]][2], cards[[1]][3])
+    if(triplets$allin[nrow(triplets)]){
+      allin <- T
+    }
+    if (is.na(triplets[1, 1])) {
+      triplets <- triplets[2:nrow(triplets),]
+    }
+    
+    triplets <- triplets[rowSums(is.na(triplets)) < 2, ]
+    if(nrow(triplets) != 1){
+      for (k in 1:(nrow(triplets) - 1)) {
+        
+        index <- which(df[1,] == triplets[k,1]) 
+        df[j + adjAmt, c(index:(index+2))] <- triplets[k, 1:3]
+      }
+    }
+  }
+  
+  if (df[nrow(df), 8] != "folds") {
+    if (actionPoints[length(actionPoints)] != length(flop)) {
+      finalTriplets <- data.frame(name = character(0), action = character(0), amt = numeric(0),
+                                  allin = logical(0), stringsAsFactors = F)
+      for (i in (actionPoints[length(actionPoints)] + 1):length(flop)) {
+        triplet <- processLine(flop[i], bbsize = df$BBSize)
+        finalTriplets[i - actionPoints[length(actionPoints)], 1] <- triplet$name
+        finalTriplets[i - actionPoints[length(actionPoints)], 2] <- triplet$action
+        finalTriplets[i - actionPoints[length(actionPoints)], 3] <- triplet$amt
+      }
+    } else {
+      finalTriplets = NA
+    }
+  } else {
+    finalTriplets = NA
+  }
+  return(list(df = df, finalTriplets = finalTriplets, flopCards = cards, allin = allin))
+}
 
 preFlopFun <- function(hand, df, breakPoints, allin = F) {
   preFlop <- hand[(breakPoints[1] + 1):(breakPoints[2] - 1)]
@@ -326,7 +494,7 @@ preFlopFun <- function(hand, df, breakPoints, allin = F) {
       for (i in (actionPoints[length(actionPoints)] + 1):length(preFlop)) {
         triplet <- processLine(preFlop[i], bbsize = df$BBSize)
         finalTriplets[i - actionPoints[length(actionPoints)], 1] <- triplet$name
-        finalTriplets[i - actionPoints[length(actionPoints)], 2] <- triplet$action
+        finalTriplets[i - actionPoints[length(actionPoints)], 2] <- triplet$action[1]
         finalTriplets[i - actionPoints[length(actionPoints)], 3] <- triplet$amt
       }
     } else {
@@ -360,67 +528,83 @@ processLine <- function(line, bbsize, allin = F) {
     amt <- as.numeric(tail(actionAmt[[1]][2]), n=1)
   }
   
-  return(list(name = name, action = action, amt = amt / bbsize, allin = allin))
+  amt <- amt / bbsize[1]
+  
+  return(list(name = name, action = action, amt = amt, allin = allin))
 }
 
 setStartVals <- function(df, playerInfo, numPlayers){
   # start has cards to false for last 4 players since there must always be 2
   df[1,c(26,36)] <- T
   df[1,c(46,56,66)] <- F
+  
+  posPlaces <- c(21)
+  
   if (numPlayers > 2){
     df[1,46] <- T
+    posPlaces <- c(posPlaces, 31)
   }
   if (numPlayers > 3){
     df[1,56] <- T
+    posPlaces <- c(posPlaces, 41)
   }
   if (numPlayers > 4){
     df[1,56] <- T
+    posPlaces <- c(posPlaces, 51)
   }
   if (numPlayers > 5){
     df[1,66] <- T
+    posPlaces <- c(posPlaces, 61)
   }
   
   # setting my stack size to start the hand
   df[1,6] <- playerInfo$JamesStack
   # setting each players stack size and that they have cards to start
-  for(i in c(21,31,41,51,61)){
-    if(df[1,i - 3] == "BB" & !is.null(playerInfo$BBInfo)){
+  for(i in posPlaces){
+    if(df[1,i - 4] == "BB" & !is.null(playerInfo$BBInfo)){
       df[1,i] <- playerInfo$BBInfo$chipCounts
       df[1,i + 1] <- playerInfo$BBInfo$VPIP
       df[1,i + 2] <- playerInfo$BBInfo$PFR
       df[1,i + 3] <- playerInfo$BBInfo$ThreeBet
       df[1,i + 4] <- playerInfo$BBInfo$hands
-    } else if(df[1,i - 3] == "SB" & !is.null(playerInfo$SBInfo)){
+    } else if(df[1,i - 4] == "SB" & !is.null(playerInfo$SBInfo)){
       df[1,i] <- playerInfo$SBInfo$chipCounts
       df[1,i + 1] <- playerInfo$SBInfo$VPIP
       df[1,i + 2] <- playerInfo$SBInfo$PFR
       df[1,i + 3] <- playerInfo$SBInfo$ThreeBet
       df[1,i + 4] <- playerInfo$SBInfo$hands
-    } else if(df[1,i - 3] == "BTN" & !is.null(playerInfo$BTNInfo)){
+    } else if(df[1,i - 4] == "BTN" & !is.null(playerInfo$BTNInfo)){
       df[1,i] <- playerInfo$BTNInfo$chipCounts
       df[1,i + 1] <- playerInfo$BTNInfo$VPIP
       df[1,i + 2] <- playerInfo$BTNInfo$PFR
       df[1,i + 3] <- playerInfo$BTNInfo$ThreeBet
       df[1,i + 4] <- playerInfo$BTNInfo$hands
-    } else if(df[1,i - 3] == "CO" & !is.null(playerInfo$COInfo)){
+    } else if(df[1,i - 4] == "CO" & !is.null(playerInfo$COInfo)){
       df[1,i] <- playerInfo$COInfo$chipCounts
       df[1,i + 1] <- playerInfo$COInfo$VPIP
       df[1,i + 2] <- playerInfo$COInfo$PFR
       df[1,i + 3] <- playerInfo$COInfo$ThreeBet
       df[1,i + 4] <- playerInfo$COInfo$hands
-    } else if(df[1,i - 3] == "MP" & !is.null(playerInfo$MPInfo)){
+    } else if(df[1,i - 4] == "MP" & !is.null(playerInfo$MPInfo)){
       df[1,i] <- playerInfo$MPInfo$chipCounts
       df[1,i + 1] <- playerInfo$MPInfo$VPIP
       df[1,i + 2] <- playerInfo$MPInfo$PFR
       df[1,i + 3] <- playerInfo$MPInfo$ThreeBet
       df[1,i + 4] <- playerInfo$MPInfo$hands
-    } else if(df[1,i - 3] == "UTG" & !is.null(playerInfo$UTGInfo)){
+    } else if(df[1,i - 4] == "UTG" & !is.null(playerInfo$UTGInfo)){
       df[1,i] <- playerInfo$UTGInfo$chipCounts
       df[1,i + 1] <- playerInfo$UTGInfo$VPIP
       df[1,i + 2] <- playerInfo$UTGInfo$PFR
       df[1,i + 3] <- playerInfo$UTGInfo$ThreeBet
       df[1,i + 4] <- playerInfo$UTGInfo$hands
     }
+  }
+  return(df)
+}
+
+setNames <- function(df, names){
+  for(i in 1:(length(names)-1)){
+    df[1,8 + i*10] <- names[i+1]
   }
   return(df)
 }
