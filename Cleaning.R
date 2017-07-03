@@ -131,8 +131,6 @@ setPlayerNames <- function(df, numPlayers, JamesPos){
   return(df)
 }
 
-hand <- hands[[1]]
-
 preProcess1 <- function(hand, breakPoints) {
   JamesPos <- strsplit(hand[grep("Hero", hand, fixed = T)[1]], " ")[[1]][2]
   JamesPos <- substring(JamesPos, 2)
@@ -210,6 +208,145 @@ processPlayer1 <- function(line) {
 ################################################################################
 # Long hand functions
 ################################################################################
+
+
+updatePot <- function(df){
+
+  for(i in 2:nrow(df)){
+    totStack1 <- sum(df[i-1,c(6,21,31,41,51,61)], na.rm = T)
+    totStack2 <- sum(df[i,c(6,21,31,41,51,61)], na.rm = T)
+    
+    df[i,11] <- round(as.numeric(df[i-1,11]) + (totStack1 - totStack2),6)
+  }
+  
+  return(df)
+}
+
+
+hasCards <- function(df, playerInfo, preflopFinal = NA, flopFinal = NA, turnFinal = NA){
+  
+  # start by making it all true then go through and update 
+  for(i in 1:5){
+    if(i < nrow(playerInfo)){
+      df[,i*10 + 16] <- T
+    } else {
+      df[,i*10 + 16] <- F
+    }
+  }
+  
+  
+  
+  if(!is.na(preflopFinal) && length(which(df[,10] == "flop")) > 0){
+    if("folds" %in% preflopFinal[,2]){
+      index1 <- which(preflopFinal[,2] == "folds")
+      for(i in index1){
+        # had to add tail funciton because it was picking up the big blind player index
+        index2 <- tail(which(df[1,] == preflopFinal[i,1]), n=1)
+        flopIndex <- which(df[,10] == "flop")[1]
+        df[flopIndex, index2 + 8] <- F
+      }
+    }
+  }
+  
+  
+  if(!is.na(flopFinal) && length(which(df[,10] == "turn")) > 0){
+    if("folds" %in% flopFinal[,2]){
+      index1 <- which(flopFinal[,2] == "folds")
+      for(i in index1){
+        index2 <- tail(which(df[1,] == flopFinal[i,1]), n=1)
+        turnIndex <- which(df[,10] == "turn")[1]
+        df[turnIndex, index2 + 8] <- F
+      }
+    }
+  }
+  
+  if(!is.na(turnFinal) && length(which(df[,10] == "river")) > 0){
+    if("folds" %in% turnFinal[,2]){
+      index1 <- which(turnFinal[,2] == "folds")
+      for(i in index1){
+        index2 <- tail(which(df[1,] == turnFinal[2,1]), n=1)
+        riverIndex <- which(df[,10] == "river")[1]
+        df[riverIndex, index2 + 8] <- F
+      }
+    }
+  }
+  
+  
+  for(i in 2:(nrow(df) - 1)){
+    for(j in 1:5){
+      
+      if(!is.na(df[i, 10*j + 9])){
+        if(df[i, 10*j + 16] && df[i, 10*j + 9] == "folds"){
+          df[i + 1, 10*j + 16] <- F
+        } else if (!df[i, 10*j + 16]){
+          df[i + 1, 10*j + 16] <- F
+        }
+      } else if (!df[i, 10*j + 16]){
+        df[i + 1, 10*j + 16] <- F
+      }
+      
+    }
+  }
+  
+  return(df)
+}
+
+updateStacks <- function(df, playerInfo, preflopFinal = NA, flopFinal = NA,
+                         turnFinal = NA, allinPre, allinFlop, allinTurn){
+  
+  actStackPairs <- matrix(c(8, 6,
+                            19, 21,
+                            29, 31,
+                            39, 41,
+                            49, 51,
+                            59, 61),nrow = 6, byrow = T)
+  
+  for(i in 2:nrow(df)){
+    for(j in 1:6){
+      if(!is.na(df[i-1, actStackPairs[j,1]])){
+        if(df[i-1, actStackPairs[j,1]] == "calls" || df[i-1, actStackPairs[j,1]] == "bets" ||  df[i-1, actStackPairs[j,1]] == "raises" ){
+          df[i, actStackPairs[j,2]] <- df[i - 1, actStackPairs[j,2]] - df[i - 1, actStackPairs[j,1] + 1]
+        } else {
+          df[i, actStackPairs[j,2]] <- df[i - 1, actStackPairs[j,2]]
+        }
+      } else {
+        df[i, actStackPairs[j,2]] <- df[i - 1, actStackPairs[j,2]]
+      }
+    }
+  }    
+  
+  
+  breaks <- c(which(df[,10] == "flop")[1], which(df[,10] == "turn")[1], which(df[,10] == "river")[1])
+  
+  if(!is.na(preflopFinal) && !is.na(sum(breaks))){
+    for(i in 1:nrow(preflopFinal)){
+      if(preflopFinal[i,2] == "calls" && !allinPre){
+        df[breaks[1], which(df[1,] == preflopFinal[i,1]) + 3] <- df[breaks[1] - 1, which(df[1,] == preflopFinal[i,1]) + 3] - as.numeric(preflopFinal[i,3])
+      }
+    }
+  }
+  
+  if(!is.na(flopFinal)){
+    for(i in 1:nrow(flopFinal)){
+      if(flopFinal[i,2] == "calls" && !allinFlop){
+        df[breaks[1], which(df[1,] == flopFinal[i,1]) + 3] <- df[breaks[1] - 1, which(df[1,] == flopFinal[i,1]) + 3] - as.numeric(flopFinal[i,3])
+      }
+    }
+  }
+  
+  if(!is.na(turnFinal)){
+    for(i in 1:nrow(turnFinal)){
+      if(turnFinal[i,2] == "calls" && !allinTurn){
+        df[breaks[1], which(df[1,] == turnFinal[i,1]) + 3] <- df[breaks[1] - 1, which(df[1,] == turnFinal[i,1]) + 3] - as.numeric(turnFinal[i,3])
+      }
+    }
+  }
+  
+  return(df)
+}
+
+
+
 
 cleanLong <- function(handLong){
   if(length(grep("has timed out", handLong, fixed = T)) > 0){
@@ -335,6 +472,7 @@ riverFun <- function(hand, df, breakPoints, allin = F) {
         finalTriplets[i - actionPoints[length(actionPoints)], 1] <- triplet$name
         finalTriplets[i - actionPoints[length(actionPoints)], 2] <- triplet$action
         finalTriplets[i - actionPoints[length(actionPoints)], 3] <- triplet$amt
+        finalTriplets[i - actionPoints[length(actionPoints)], 4] <- triplet$allin
       }
     } else {
       finalTriplets = NA
@@ -392,6 +530,7 @@ turnFun <- function(hand, df, breakPoints, allin = F) {
         finalTriplets[i - actionPoints[length(actionPoints)], 1] <- triplet$name
         finalTriplets[i - actionPoints[length(actionPoints)], 2] <- triplet$action
         finalTriplets[i - actionPoints[length(actionPoints)], 3] <- triplet$amt
+        finalTriplets[i - actionPoints[length(actionPoints)], 4] <- triplet$allin
       }
     } else {
       finalTriplets = NA
@@ -449,6 +588,7 @@ flopFun <- function(hand, df, breakPoints, allin = F) {
         finalTriplets[i - actionPoints[length(actionPoints)], 1] <- triplet$name
         finalTriplets[i - actionPoints[length(actionPoints)], 2] <- triplet$action
         finalTriplets[i - actionPoints[length(actionPoints)], 3] <- triplet$amt
+        finalTriplets[i - actionPoints[length(actionPoints)], 4] <- triplet$allin
       }
     } else {
       finalTriplets = NA
@@ -496,6 +636,7 @@ preFlopFun <- function(hand, df, breakPoints, allin = F) {
         finalTriplets[i - actionPoints[length(actionPoints)], 1] <- triplet$name
         finalTriplets[i - actionPoints[length(actionPoints)], 2] <- triplet$action[1]
         finalTriplets[i - actionPoints[length(actionPoints)], 3] <- triplet$amt
+        finalTriplets[i - actionPoints[length(actionPoints)], 4] <- triplet$allin
       }
     } else {
       finalTriplets = NA
@@ -508,7 +649,8 @@ preFlopFun <- function(hand, df, breakPoints, allin = F) {
 
 ### processLine will return name, action, amt triplet. For loop will combine these into a frame.
 ### processLine should be general for any time a line can be processed.
-processLine <- function(line, bbsize, allin = F) {
+processLine <- function(line, bbsize) {
+  allin <- F
   line <- strsplit(line, ":")
   name <- line[[1]][1]
   actionAmt <- line[[1]][2]
@@ -517,6 +659,7 @@ processLine <- function(line, bbsize, allin = F) {
   action <- actionAmt[[1]][1]
   if (length(actionAmt[[1]]) == 1) {
     amt <- NA
+    allin <- F
   } else if(actionAmt[[1]][length(actionAmt[[1]])] == "all-in"){
     if(length(actionAmt[[1]] == 5)){
       amt <- as.numeric(actionAmt[[1]][2])
@@ -526,6 +669,7 @@ processLine <- function(line, bbsize, allin = F) {
     allin <- T
   }  else {
     amt <- as.numeric(tail(actionAmt[[1]][2]), n=1)
+    allin <- F
   }
   
   amt <- amt / bbsize[1]
@@ -535,17 +679,17 @@ processLine <- function(line, bbsize, allin = F) {
 
 setStartVals <- function(df, playerInfo, numPlayers){
   # start has cards to false for last 4 players since there must always be 2
-  df[1,c(26,36)] <- T
+  df[1,c(26)] <- T
   df[1,c(46,56,66)] <- F
   
   posPlaces <- c(21)
   
   if (numPlayers > 2){
-    df[1,46] <- T
+    df[1,36] <- T
     posPlaces <- c(posPlaces, 31)
   }
   if (numPlayers > 3){
-    df[1,56] <- T
+    df[1,46] <- T
     posPlaces <- c(posPlaces, 41)
   }
   if (numPlayers > 4){
