@@ -299,7 +299,7 @@ preFlopFun <- function(hand, df, breakPoints, allin = F) {
     triplets <- data.frame(name = character(0), action = character(0), amt = numeric(0),
                            allin = logical(0), stringsAsFactors = F)
     for (i in (actionPoints[j] + 1):actionPoints[j + 1]) {
-      triplet <- processLine(preFlop[i])
+      triplet <- processLine(preFlop[i], bbsize = df$BBSize)
       triplets[i - 1, 1] <- triplet$name
       triplets[i - 1, 2] <- triplet$action
       triplets[i - 1, 3] <- triplet$amt
@@ -324,7 +324,7 @@ preFlopFun <- function(hand, df, breakPoints, allin = F) {
       finalTriplets <- data.frame(name = character(0), action = character(0), amt = numeric(0),
                                   allin = logical(0), stringsAsFactors = F)
       for (i in (actionPoints[length(actionPoints)] + 1):length(preFlop)) {
-        triplet <- processLine(preFlop[i])
+        triplet <- processLine(preFlop[i], bbsize = df$BBSize)
         finalTriplets[i - actionPoints[length(actionPoints)], 1] <- triplet$name
         finalTriplets[i - actionPoints[length(actionPoints)], 2] <- triplet$action
         finalTriplets[i - actionPoints[length(actionPoints)], 3] <- triplet$amt
@@ -340,7 +340,7 @@ preFlopFun <- function(hand, df, breakPoints, allin = F) {
 
 ### processLine will return name, action, amt triplet. For loop will combine these into a frame.
 ### processLine should be general for any time a line can be processed.
-processLine <- function(line, allin = F) {
+processLine <- function(line, bbsize, allin = F) {
   line <- strsplit(line, ":")
   name <- line[[1]][1]
   actionAmt <- line[[1]][2]
@@ -360,12 +360,26 @@ processLine <- function(line, allin = F) {
     amt <- as.numeric(tail(actionAmt[[1]][2]), n=1)
   }
   
-  return(list(name = name, action = action, amt = amt, allin = allin))
+  return(list(name = name, action = action, amt = amt / bbsize, allin = allin))
 }
 
-setStartVals <- function(df, playerInfo){
+setStartVals <- function(df, playerInfo, numPlayers){
   # start has cards to false for last 4 players since there must always be 2
+  df[1,c(26,36)] <- T
   df[1,c(46,56,66)] <- F
+  if (numPlayers > 2){
+    df[1,46] <- T
+  }
+  if (numPlayers > 3){
+    df[1,56] <- T
+  }
+  if (numPlayers > 4){
+    df[1,56] <- T
+  }
+  if (numPlayers > 5){
+    df[1,66] <- T
+  }
+  
   # setting my stack size to start the hand
   df[1,6] <- playerInfo$JamesStack
   # setting each players stack size and that they have cards to start
@@ -376,42 +390,36 @@ setStartVals <- function(df, playerInfo){
       df[1,i + 2] <- playerInfo$BBInfo$PFR
       df[1,i + 3] <- playerInfo$BBInfo$ThreeBet
       df[1,i + 4] <- playerInfo$BBInfo$hands
-      df[1,i + 5] <- T
     } else if(df[1,i - 3] == "SB" & !is.null(playerInfo$SBInfo)){
       df[1,i] <- playerInfo$SBInfo$chipCounts
       df[1,i + 1] <- playerInfo$SBInfo$VPIP
       df[1,i + 2] <- playerInfo$SBInfo$PFR
       df[1,i + 3] <- playerInfo$SBInfo$ThreeBet
       df[1,i + 4] <- playerInfo$SBInfo$hands
-      df[1,i + 5] <- T
     } else if(df[1,i - 3] == "BTN" & !is.null(playerInfo$BTNInfo)){
       df[1,i] <- playerInfo$BTNInfo$chipCounts
       df[1,i + 1] <- playerInfo$BTNInfo$VPIP
       df[1,i + 2] <- playerInfo$BTNInfo$PFR
       df[1,i + 3] <- playerInfo$BTNInfo$ThreeBet
       df[1,i + 4] <- playerInfo$BTNInfo$hands
-      df[1,i + 5] <- T
     } else if(df[1,i - 3] == "CO" & !is.null(playerInfo$COInfo)){
       df[1,i] <- playerInfo$COInfo$chipCounts
       df[1,i + 1] <- playerInfo$COInfo$VPIP
       df[1,i + 2] <- playerInfo$COInfo$PFR
       df[1,i + 3] <- playerInfo$COInfo$ThreeBet
       df[1,i + 4] <- playerInfo$COInfo$hands
-      df[1,i + 5] <- T
     } else if(df[1,i - 3] == "MP" & !is.null(playerInfo$MPInfo)){
       df[1,i] <- playerInfo$MPInfo$chipCounts
       df[1,i + 1] <- playerInfo$MPInfo$VPIP
       df[1,i + 2] <- playerInfo$MPInfo$PFR
       df[1,i + 3] <- playerInfo$MPInfo$ThreeBet
       df[1,i + 4] <- playerInfo$MPInfo$hands
-      df[1,i + 5] <- T
     } else if(df[1,i - 3] == "UTG" & !is.null(playerInfo$UTGInfo)){
       df[1,i] <- playerInfo$UTGInfo$chipCounts
       df[1,i + 1] <- playerInfo$UTGInfo$VPIP
       df[1,i + 2] <- playerInfo$UTGInfo$PFR
       df[1,i + 3] <- playerInfo$UTGInfo$ThreeBet
       df[1,i + 4] <- playerInfo$UTGInfo$hands
-      df[1,i + 5] <- T
     }
   }
   return(df)

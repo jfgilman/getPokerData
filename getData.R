@@ -79,12 +79,18 @@ df <- data.frame(handNum = integer(0), BBSize = integer(0), JamesPos = character
                  Op5HasCards = logical(0), stringsAsFactors=FALSE)
 
 preProcessData1 <- preProcess1(handShort)
-proFlopData <- preFlop(handShort, preProcessData1$numPlayers, preProcessData1$JamesPos)
+preFlopData <- preFlop(handShort, preProcessData1$numPlayers, preProcessData1$JamesPos)
 df <- setPlayerNames(df, preProcessData1$numPlayers, preProcessData1$JamesPos)
+df$JamesCard1 <- preFlopData$JamesCard1
+df$JamesCard2 <- preFlopData$JamesCard2
+df$JamesPos <- preProcessData1$JamesPos
+df$JamesName <- screenName
 breakPoints <- getBreakpoints(handLong)
 
-df <- setStartVals(df, preProcessData1)
+df <- setStartVals(df, preProcessData1, preProcessData1$numPlayers)
 preProcessData2 <- preProcess2(handLong, breakPoints)
+df$handNum <- preProcessData2$handNum
+df$BBSize <- preProcessData2$bigBlindAmt
 preFlop <- preFlopFun(handLong, df, breakPoints)
 df <- preFlop[[1]]
 
